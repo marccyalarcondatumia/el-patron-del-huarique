@@ -76,8 +76,11 @@ h1{font-size:clamp(3.1rem,7vw,7.4rem);margin:1rem 0 1.4rem}
 .checkout-fields label{display:grid;gap:.3rem;font-weight:800;font-size:.68rem;text-transform:uppercase}
 .checkout-fields .wide{grid-column:span 2}
 .checkout-fields input,.checkout-fields select{border:1px solid #aaa08b;background:#fffaf0;padding:.68rem;min-width:0;color:#17130e;font-size:.85rem}
-.send-order{width:100%;margin-top:1rem;border:0;background:var(--gold);color:#1c1406;padding:.95rem;font-weight:950;text-transform:uppercase;letter-spacing:.03em}
+.send-order{width:100%;margin-top:1rem;border:0;background:var(--gold);color:#1c1406;padding:.95rem;font-weight:950;text-transform:uppercase;letter-spacing:.03em;transition:background .15s,color .15s}
 .send-order:disabled{opacity:.45;cursor:not-allowed}
+.send-order.confirming{background:var(--red);color:#fff}
+.card-bottom button{transition:background .15s,color .15s}
+.card-bottom button.confirming{background:var(--red)!important;color:#fff!important}
 .send-order span{float:right;font-size:1.25rem;line-height:.5}
 .modal-backdrop{position:fixed;z-index:30;inset:0;background:#000b;padding:1rem;display:grid;place-items:center}
 .extras-modal{position:relative;width:min(540px,100%);background:#f2ead8;color:#17130e;padding:2rem;box-shadow:9px 9px 0 var(--gold)}
