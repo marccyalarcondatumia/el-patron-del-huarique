@@ -25,7 +25,6 @@ const products: Product[] = [
   { id:'churrasco', category:'Especiales', name:'Churrasco Tradicional', price:28, description:'Churrasco, papas y ensalada.', image:'/churrasco-tradicional.jpg' },
   { id:'lomo', category:'Especiales', name:'Lomo Saltado', price:30, description:'Lomo, papas y arroz blanco.', image:'/lomo-saltado-carne.jpg' },
   { id:'chaufa', category:'Especiales', name:'Arroz Chaufa de Pollo', price:20, description:'Clásico y contundente.', image:'/arroz-chaufa.jpg' },
-  { id:'churrasco-pobre', category:'Especiales', name:'Churrasco a lo Pobre', price:32, description:'Churrasco, huevo, plátano, papas y ensalada.' },
   { id:'churrasco-patron', category:'Especiales', name:'Churrasco a lo Patrón', price:35, description:'Churrasco, chorizo, tocino, papas y ensalada.', image:'/churrasco-el-patron.jpg' },
   { id:'milanesa', category:'Especiales', name:'Milanesa Tradicional', price:30, description:'Milanesa, papas y ensalada.', image:'/milanesa-pollo.jpg' },
   { id:'lomo-pobre', category:'Especiales', name:'Lomo Saltado a lo Pobre', price:35, description:'Lomo saltado, huevo, plátano y arroz blanco.', image:'/lomo-saltado-carne-pobre.jpg' },
