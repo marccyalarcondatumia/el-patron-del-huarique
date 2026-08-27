@@ -48,6 +48,18 @@ const broasterSauces = ['Ají','Mayonesa','Kétchup'];
 const wingSauces = ['BBQ','BBQ picante','Teriyaki','Maracuyá','Rocoto','Broaster','Salsa infierno','Alachalaca'];
 const categories = ['Hamburguesas','Alitas','Salchipapas','Pollo Broaster','Especiales','Papas Nativas','Ceviches'];
 const money = (amount:number) => `S/ ${amount.toFixed(2)}`;
+const categoryEmoji: Record<string,string> = { 'Hamburguesas':'🍔', 'Alitas':'🍗', 'Salchipapas':'🍟', 'Pollo Broaster':'🍗', 'Especiales':'🍽️', 'Papas Nativas':'🥔', 'Ceviches':'🍤' };
+const SHEET_WEBHOOK_URL = '';
+function orderTag() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2,'0');
+  const month = String(now.getMonth()+1).padStart(2,'0');
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2,'0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return `${day}/${month} · ${hours}:${minutes} ${ampm}`;
+}
 
 export default function Home() {
   const [activeCategory,setActiveCategory] = useState('Hamburguesas');
@@ -72,12 +84,20 @@ export default function Home() {
     event.preventDefault();
     if (!cart.length) return;
     if (!name || !phone || !address || (orderFor === 'scheduled' && !schedule)) { window.alert('Completa nombre, teléfono, dirección y el horario si deseas programar el pedido.'); return; }
+    const tag = orderTag();
     const lines = categories.flatMap(category => {
       const group = cart.filter(item => item.category === category);
-      return group.length ? [`*${category.toUpperCase()}*`, ...group.map(item => `• ${item.name} — ${money(item.price + extrasTotal(item))}${item.extras.length ? `%0A  Opciones: ${item.extras.join(', ')}` : ''}`)] : [];
+      return group.length ? [`${categoryEmoji[category] ?? '•'} *${category.toUpperCase()}*`, ...group.map(item => `• ${item.name} — ${money(item.price + extrasTotal(item))}${item.extras.length ? `%0A  + ${item.extras.join(', ')}` : ''}`)] : [];
     });
     const when = orderFor === 'scheduled' ? `Programado: ${schedule}` : 'Lo quiero ahora';
-    const message = `*NUEVO PEDIDO — EL PATRÓN DEL HUARIQUE*%0A%0A${lines.join('%0A')}%0A%0ADelivery: ${money(delivery)}%0A*Total: ${money(total)}*%0A%0ACliente: ${name}%0ATeléfono: ${phone}%0ADirección: ${address}%0AEntrega: ${when}%0APago: ${payment}${note ? `%0AIndicaciones: ${note}` : ''}%0A%0APor favor, adjunta la captura de tu comprobante de pago para confirmar el pedido.`;
+    const productsPlain = categories.flatMap(category => {
+      const group = cart.filter(item => item.category === category);
+      return group.map(item => `${item.name}${item.extras.length ? ` (+${item.extras.join(', ')})` : ''}`);
+    }).join(' | ');
+    const message = `🧾 *PEDIDO ${tag}*%0A*EL PATRÓN DEL HUARIQUE*%0A%0A${lines.join('%0A')}%0A%0A━━━━━━━━━━━━%0ADelivery: ${money(delivery)}%0A*TOTAL: ${money(total)}*%0A━━━━━━━━━━━━%0A%0A👤 ${name}%0A📞 ${phone}%0A📍 ${address}%0A🕐 ${when}%0A💳 ${payment}${note ? `%0A📝 ${note}` : ''}%0A%0A👉 Envía tu comprobante de pago para confirmar`;
+    if (SHEET_WEBHOOK_URL) {
+      fetch(SHEET_WEBHOOK_URL, { method:'POST', body: JSON.stringify({ orderNumber: tag, name, phone, address, products: productsPlain, delivery, total, payment }) }).catch(() => {});
+    }
     window.open(`https://wa.me/51926304161?text=${message}`,'_blank','noopener,noreferrer');
   }
   return <main data-site-version="salchipapas-20260826-2152">
